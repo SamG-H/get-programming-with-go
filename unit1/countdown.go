@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"time"
 	"math/rand"
+	"time"
 )
 
 func main() {
@@ -11,14 +11,14 @@ func main() {
 	fmt.Println("Beginning countdown sequence")
 	count := 10
 	for count > 0 {
-		if (rand.Intn(100) == 1) {
+		if rand.Intn(100) == 1 {
 			break
 		}
 		fmt.Printf("%v...\n", count)
 		time.Sleep(time.Second)
 		count--
 	}
-	if (count == 0) {
+	if count == 0 {
 		fmt.Println("Launch successful")
 	} else {
 		fmt.Println("Launch failed")
