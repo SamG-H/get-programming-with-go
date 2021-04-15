@@ -2,8 +2,8 @@ package main
 
 import "fmt"
 
-type celsius float64
 type fahrenheit float64
+type celsius float64
 type kelvin float64
 
 func (f fahrenheit) celsius() celsius {
@@ -43,6 +43,11 @@ func main() {
 	fmt.Println("F to K:", f.kelvin())
 	fmt.Println("C to K:", c.kelvin())
 
-	var zeroValue kelvin
-	fmt.Println("Kelvin zero value:", temp)
+	var kelvinZeroValue kelvin
+	fmt.Println("Kelvin zero value and absolute zero:", kelvinZeroValue)
+
+	celsiusAbsZero := kelvinZeroValue.celsius()
+	fmt.Println("Absolute zero in Celsius:", celsiusAbsZero)
+	fmt.Println("Absolute zero in Fahrenheit:", celsiusAbsZero.fahrenheit())
+
 }
