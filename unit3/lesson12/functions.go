@@ -25,5 +25,4 @@ func main() {
 	fmt.Println(kelvin, "° K is", celsius, "° C")
 	fmt.Println(celsius, "° C is", fahrenheit, "° F")
 	fmt.Println(kelvin, "° K is", kelvinToFahrenheit(kelvin), "° F")
-
 }
