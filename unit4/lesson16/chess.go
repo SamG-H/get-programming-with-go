@@ -3,13 +3,13 @@ package main
 import "fmt"
 
 func displayBoard(board [8][8]rune) {
-	for _, column := range board {
-		for _, row := range column {
-			if row == 0 {
+	for _, row := range board {
+		for _, column := range row {
+			if column == 0 {
 				fmt.Printf("|%c", ' ')
 				continue
 			}
-			fmt.Printf("|%c", row)
+			fmt.Printf("|%c", column)
 		}
 		fmt.Printf("%c\n", '|')
 	}
