@@ -2,10 +2,9 @@ package main
 
 import "fmt"
 
-const tempFmt = "%.1f"
-
 const (
 	PrintColor = "\033[38;5;%dm%-9v\033[39;49m"
+	tempFmt = "%.1f"
 )
 
 type getDataFunc func(int) (col1, col2, col3 string, col1color, col2color, col3color int)

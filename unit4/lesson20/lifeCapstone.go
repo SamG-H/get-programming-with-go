@@ -7,32 +7,34 @@ import (
 )
 
 const (
-	width         = 80
-	height        = 15
-	ansiEscapeSeq = "\033c\x0c"
-	blackSquare   = "\xE2\xAC\x9B"
-	whiteSqure    = "\xE2\xAC\x9C"
-	greenSquare   = "\xF0\x9F\x9F\xA9"
+	width          = 40
+	height         = 20
+	sleepIteration = 100
+	ansiEscapeSeq  = "\033c\x0c"
+	blackSquare    = "\xE2\xAC\x9B"
+	whiteSquare     = "\xE2\xAC\x9C"
+	brownSquare = "\xF0\x9F\x9F\xAB"
+	greenSquare    = "\xF0\x9F\x9F\xA9"
 )
 
-type Universe [][]bool
+type World [][]bool
 
-func (u Universe) Show() {
-	for _, row := range u {
-		for _, column := range row {
+func (w World) Display() {
+	for _, row := range w {
+		for _, cell := range row {
 			switch {
-			case column:
+			case cell:
 				fmt.Printf(greenSquare)
 			default:
-				fmt.Printf(blackSquare)
+				fmt.Printf(brownSquare)
 			}
 		}
 		fmt.Printf("\n")
 	}
 }
 
-func (u Universe) Seed() {
-	for _, row := range u {
+func (w World) Seed() {
+	for _, row := range w {
 		for i := range row {
 			if rand.Intn(4) == 1 {
 				row[i] = true
@@ -41,8 +43,8 @@ func (u Universe) Seed() {
 	}
 }
 
-func (u Universe) TestSeed() {
-	for i, row := range u {
+func (w World) TestSeed() {
+	for i, row := range w {
 		for j := range row {
 			switch {
 			case i == 1 && j == 1:
@@ -51,28 +53,28 @@ func (u Universe) TestSeed() {
 				row[j] = true
 			case i == 1 && j == 2:
 				row[j] = true
-			//case i == 1 && j == 0:
-			//	row[j] = true
+				//case i == 1 && j == 0:
+				//	row[j] = true
 			}
 		}
 	}
 }
 
-func (u Universe) Alive(x, y int) bool {
+func (w World) Alive(x, y int) bool {
 	y = (height + y) % height
 	x = (width + x) % width
-	return u[y][x]
+	return w[y][x]
 }
 
-func (u Universe) Neighbors(x, y int) int {
+func (w World) Neighbors(x, y int) int {
 	var neighbors int
 
-	for i := y - 1; i <= y + 1; i++ {
-		for j := x - 1; j <= x + 1; j++ {
+	for i := y - 1; i <= y+1; i++ {
+		for j := x - 1; j <= x+1; j++ {
 			if i == y && j == x {
-				continue;
+				continue
 			}
-			if u.Alive(j, i) {
+			if w.Alive(j, i) {
 				neighbors++
 			}
 		}
@@ -80,9 +82,9 @@ func (u Universe) Neighbors(x, y int) int {
 	return neighbors
 }
 
-func (u Universe) Next(x, y int) bool {
-	n := u.Neighbors(x, y)
-	alive := u.Alive(x, y)
+func (w World) Next(x, y int) bool {
+	n := w.Neighbors(x, y)
+	alive := w.Alive(x, y)
 	if n < 4 && n > 1 && alive {
 		return true
 	} else if n == 3 && !alive {
@@ -92,7 +94,7 @@ func (u Universe) Next(x, y int) bool {
 	}
 }
 
-func Step(a, b Universe) {
+func Step(a, b World) {
 	for i := 0; i < height; i++ {
 		for j := 0; j < width; j++ {
 			b[i][j] = a.Next(j, i)
@@ -100,25 +102,25 @@ func Step(a, b Universe) {
 	}
 }
 
-func MakeUniverse() Universe {
-	u := make(Universe, height)
-	for i, _ := range u {
-		u[i] = make([]bool, width)
+func MakeWorld() World {
+	w := make(World, height)
+	for i := range w {
+		w[i] = make([]bool, width)
 	}
-	return u
+	return w
 }
 
 func main() {
 	fmt.Println(ansiEscapeSeq)
 	rand.Seed(time.Now().UTC().UnixNano())
-	newUniverse := MakeUniverse()
-	nextUniverse := MakeUniverse()
-	newUniverse.Seed()
+	newWorld := MakeWorld()
+	nextWorld := MakeWorld()
+	newWorld.Seed()
 	for {
-		newUniverse.Show()
-		time.Sleep(50 * time.Millisecond)
+		newWorld.Display()
+		Step(newWorld, nextWorld)
+		newWorld, nextWorld = nextWorld, newWorld
+		time.Sleep(sleepIteration * time.Millisecond)
 		fmt.Println(ansiEscapeSeq)
-		Step(newUniverse, nextUniverse)
-		newUniverse, nextUniverse = nextUniverse, newUniverse
 	}
 }
